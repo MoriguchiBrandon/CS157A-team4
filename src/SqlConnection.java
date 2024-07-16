@@ -1,7 +1,10 @@
 import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 
 public class SqlConnection {
-
     private static final String DB_URL = "jdbc:mysql://localhost:3306/GameStore?autoReconnect=true&useSSL=false";
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "Sexyjutsu100!";
