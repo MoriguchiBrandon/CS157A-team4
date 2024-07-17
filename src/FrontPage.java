@@ -63,8 +63,10 @@ public class FrontPage extends JFrame {
                 String user = userText.getText();
                 String pass = new String(password.getPassword());
                 System.out.println("Attempting to authenticate user: " + user); // Debug statement
-                if (SqlConnection.authenticateUser(user, pass)) {
+                User authenticatedUser = SqlConnection.authenticateUser(user, pass);
+                if (authenticatedUser != null) {
                     JOptionPane.showMessageDialog(null, "Login successful");
+                    openHomePage(authenticatedUser);
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid credentials");
                 }
@@ -77,13 +79,54 @@ public class FrontPage extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String user = userText.getText();
                 String pass = new String(password.getPassword());
+                String role = JOptionPane.showInputDialog("Enter role (customer/staff):");
                 System.out.println("Attempting to register user: " + user); // Debug statement
-                if (SqlConnection.addUser(user, pass)) {
+                if (SqlConnection.addUser(user, pass, role)) {
                     JOptionPane.showMessageDialog(null, "User registered successfully");
                 } else {
                     JOptionPane.showMessageDialog(null, "Error registering user");
                 }
             }
         });
+    }
+
+    private void openHomePage(User user) {
+        JFrame homePage = new JFrame();
+        homePage.setTitle(capitalize(user.getRole()) + " Home Page");
+        homePage.setSize(400, 300);
+        homePage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel panel = new JPanel();
+        homePage.add(panel);
+
+        JLabel welcomeLabel = new JLabel("Welcome " + user.getUsername() + ",");
+        panel.add(welcomeLabel);
+
+        // Add role-based functionalities here
+        switch (user.getRole().toLowerCase()) {
+            case "customer":
+                // Add customer-specific buttons and functionalities
+                JButton viewProductsButton = new JButton("View Products");
+                panel.add(viewProductsButton);
+                // Add more customer-specific functionality
+                break;
+            case "staff":
+                // Add staff-specific buttons and functionalities
+                JButton manageInventoryButton = new JButton("Manage Inventory");
+                panel.add(manageInventoryButton);
+                // Add more staff-specific functionality
+                break;
+            default:
+                break;
+        }
+
+        homePage.setVisible(true);
+    }
+
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 }

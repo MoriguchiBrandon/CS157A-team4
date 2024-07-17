@@ -1,8 +1,4 @@
 import java.sql.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 
 public class SqlConnection {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/GameStore?autoReconnect=true&useSSL=false";
@@ -21,26 +17,39 @@ public class SqlConnection {
         return DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
     }
 
-    public static boolean authenticateUser(String username, String password) {
-        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+    public static User authenticateUser(String username, String password) {
+        String query = "SELECT role FROM users WHERE username = ? AND password = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
-            return rs.next();
+            if (rs.next()) {
+                String role = rs.getString("role");
+                System.out.println("Role found: " + role); // Debug statement
+                if ("customer".equalsIgnoreCase(role)) {
+                    System.out.println("Creating Customer instance"); // Debug statement
+                    return new Customer(username, password);
+                } else if ("staff".equalsIgnoreCase(role)) {
+                    System.out.println("Creating Staff instance"); // Debug statement
+                    return new Staff(username, password);
+                }
+            } else {
+                System.out.println("No user found with the given credentials"); // Debug statement
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return null;
     }
 
-    public static boolean addUser(String username, String password) {
-        String query = "INSERT INTO users (username, password) VALUES (?, ?)";
+    public static boolean addUser(String username, String password, String role) {
+        String query = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             stmt.setString(2, password);
+            stmt.setString(3, role);
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
