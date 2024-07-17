@@ -28,10 +28,8 @@ public class SqlConnection {
                 String role = rs.getString("role");
                 System.out.println("Role found: " + role); // Debug statement
                 if ("customer".equalsIgnoreCase(role)) {
-                    System.out.println("Creating Customer instance"); // Debug statement
                     return new Customer(username, password);
                 } else if ("staff".equalsIgnoreCase(role)) {
-                    System.out.println("Creating Staff instance"); // Debug statement
                     return new Staff(username, password);
                 }
             } else {
@@ -43,7 +41,7 @@ public class SqlConnection {
         return null;
     }
 
-    public static boolean addUser(String username, String password, String role) {
+    public static boolean addUser(String username, String password, String role) throws SQLIntegrityConstraintViolationException {
         String query = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -52,6 +50,21 @@ public class SqlConnection {
             stmt.setString(3, role);
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw e; // Rethrow to be handled in the calling method
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean manufacturerExists(String manufacturerId) {
+        String query = "SELECT 1 FROM manufacturer WHERE manufacturer_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, manufacturerId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
