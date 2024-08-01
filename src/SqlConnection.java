@@ -3,7 +3,7 @@ import java.sql.*;
 public class SqlConnection {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/GameStore?autoReconnect=true&useSSL=false";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "Sexyjutsu100!";
+    private static final String DB_PASSWORD = "IAmLate2022!";
 
     static {
         try {
