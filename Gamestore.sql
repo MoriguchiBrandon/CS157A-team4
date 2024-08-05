@@ -1,4 +1,5 @@
 CREATE DATABASE `gamestore` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `gamestore`;
 CREATE TABLE `address` (
   `address_id` int NOT NULL,
   `address` varchar(200) NOT NULL,
@@ -118,25 +119,21 @@ CREATE TABLE `fulfilled_by` (
   CONSTRAINT `fullfill_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `inventory_add` (
-  `inventory_num` int NOT NULL,
   `product_id` int NOT NULL,
-  `staff` int NOT NULL,
-  PRIMARY KEY (`inventory_num`,`product_id`,`staff`),
+  `staff_id` int NOT NULL,
+  PRIMARY KEY (`product_id`,`staff_id`),
   KEY `add_product_id_idx` (`product_id`),
-  KEY `add_staff_id_idx` (`staff`),
-  CONSTRAINT `add_inventory_id` FOREIGN KEY (`inventory_num`) REFERENCES `inventory` (`inventory_num`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `add_staff_id_idx` (`staff_id`),
   CONSTRAINT `add_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `add_staff_id` FOREIGN KEY (`staff`) REFERENCES `staff` (`staff_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `add_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `inventory_subtract` (
   `inventory_num` int NOT NULL,
-  `product_id` int NOT NULL,
   `staff_id` int NOT NULL,
-  PRIMARY KEY (`inventory_num`,`product_id`,`staff_id`),
-  KEY `sub_product_id_idx` (`product_id`),
+  PRIMARY KEY (`inventory_num`,`staff_id`),
+  KEY `sub_inventory_id_idx` (`inventory_num`),
   KEY `sub_staff_id_idx` (`staff_id`),
   CONSTRAINT `sub_inventory_num` FOREIGN KEY (`inventory_num`) REFERENCES `inventory` (`inventory_num`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `sub_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `sub_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -166,7 +163,7 @@ VALUES
 (9, 'Gamestore Livermore'),
 (10, 'Gamestore San Francisco');
 
-INSERT INTO `manufacturers` (`name`, `manufacturer_id`)
+INSERT INTO `manufacturers` (`name`, `manufactuer_id`)
 VALUES
 ('Nintendo', 1),
 ('Naughty Dog', 2),
@@ -205,7 +202,7 @@ VALUES
 (9, 'Xbox 360'),
 (10, 'Game Cube');
 
-INSERT INTO `users` (`username`, `password`)
+INSERT INTO `user` (`username`, `password`)
 VALUES
 ('AuroraDreamer', 'v^X*4T7!Q#R9@'),
 ('CosmicVoyage', 'R9&!mT^5b#J7@'),
@@ -554,7 +551,7 @@ VALUES
 (55, 7),
 (76, 8),
 (209, 9),
-(220, 10);
+(210, 10);
 
 INSERT INTO `order` (`order_id`, `date_ordered`, `date_fulfilled`)
 VALUES
@@ -657,7 +654,7 @@ VALUES
 (70, 3),
 (80, 3),
 (89, 3),
-(98, 3)
+(98, 3);
 
 INSERT INTO `fulfilled_by` (`order_id`, `staff_id`)
 VALUES
