@@ -46,7 +46,8 @@ CREATE TABLE `products` (
 CREATE TABLE `user` (
   `username` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
-  PRIMARY KEY (`username`)
+  `user_id`  int NOT NULL,
+  PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `customer` (
   `customer_id` int NOT NULL,
@@ -54,10 +55,10 @@ CREATE TABLE `customer` (
   `last_name` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
   `phone` varchar(45) DEFAULT NULL,
-  `username` varchar(100) NOT NULL,
+  `user_id` int NOT NULL,
   PRIMARY KEY (`customer_id`),
-  KEY `customer_username_idx` (`username`),
-  CONSTRAINT `customer_username` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `customer_userid_idx` (`user_id`),
+  CONSTRAINT `customer_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `deliver_to` (
   `order_id` int NOT NULL,
@@ -89,10 +90,10 @@ CREATE TABLE `staff` (
   `staff_id` int NOT NULL,
   `first_name` varchar(45) NOT NULL,
   `last_name` varchar(45) NOT NULL,
-  `username` varchar(100) NOT NULL,
+  `user_id`  int NOT NULL,
   PRIMARY KEY (`staff_id`),
-  KEY `staff_username_idx` (`username`),
-  CONSTRAINT `staff_username` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `staff_username_idx` (`user_id`),
+  CONSTRAINT `staff_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `works_at` (
   `store_id` int NOT NULL,
@@ -202,43 +203,44 @@ VALUES
 (9, 'Xbox 360'),
 (10, 'Game Cube');
 
-INSERT INTO `user` (`username`, `password`)
+INSERT INTO `user` (`username`, `password`, `user_id`)
 VALUES
-('AuroraDreamer', 'v^X*4T7!Q#R9@'),
-('CosmicVoyage', 'R9&!mT^5b#J7@'),
-('CrimsonNebula', 'm&^9X*3!P#L$2'),
-('EasyC', '1111'),
-('EasyS', '1111'),
-('EchoFrost', 'G3!mL#xQ8pF$'),
-('ElectricEcho', '*W9^@t&4B#R1$'),
-('EnigmaWalker', 'G$2^P6@x!R&8#'),
-('FrostedPhoenix', 'Y#5@P*3!bR^X8'),
-('GalacticQuest', 'H5$R&2^9@Q*8!'),
-('MoonlitWanderer', 'k@R1^jG$5XpA'),
-('MysticHorizon', 'P*3!fR^L&7$wJ'),
-('NebulaNinja', 'N9&h%3D@F^Jx!'),
-('PixelPioneer', 'u$X2@z^Q8#Jk8'),
-('QuantumQuokka', '#4bL&^Yp*6Zt!'),
-('RogueRanger', 'Z@6^h#1*B2$kV'),
-('SereneSpecter', 'k^3$L&2*J@9!m'),
-('StarGazer123', 'X7&vT^bJ9aZ@'),
-('TechVoyager', 'q8*WvZ%2RbP^'),
-('VortexVagabond', 'j7!L^Q*9x&F$2'),
-('WhisperingShadow', 'X*7^2!L@#m8&J'),
-('ZenithExplorer', 'H5^t@K%8^mL#1');
+('AuroraDreamer', 'v^X*4T7!Q#R9@', 4),
+('CosmicVoyage', 'R9&!mT^5b#J7@', 5),
+('CrimsonNebula', 'm&^9X*3!P#L$2', 3),
+('EasyC', '1111', 1),
+('EasyS', '1111', 2),
+('EchoFrost', 'G3!mL#xQ8pF$', 6),
+('ElectricEcho', '*W9^@t&4B#R1$', 7),
+('EnigmaWalker', 'G$2^P6@x!R&8#', 8),
+('FrostedPhoenix', 'Y#5@P*3!bR^X8', 9),
+('GalacticQuest', 'H5$R&2^9@Q*8!', 10),
+('MoonlitWanderer', 'k@R1^jG$5XpA', 11),
+('MysticHorizon', 'P*3!fR^L&7$wJ', 12),
+('NebulaNinja', 'N9&h%3D@F^Jx!', 13),
+('PixelPioneer', 'u$X2@z^Q8#Jk8', 14),
+('QuantumQuokka', '#4bL&^Yp*6Zt!', 15),
+('RogueRanger', 'Z@6^h#1*B2$kV', 16),
+('SereneSpecter', 'k^3$L&2*J@9!m', 17),
+('StarGazer123', 'X7&vT^bJ9aZ@', 18),
+('TechVoyager', 'q8*WvZ%2RbP^', 19),
+('VortexVagabond', 'j7!L^Q*9x&F$2', 20),
+('WhisperingShadow', 'X*7^2!L@#m8&J', 21),
+('ZenithExplorer', 'H5^t@K%8^mL#1', 22);
 
-INSERT INTO `customer` (`customer_id`, `first_name`, `last_name`, `email`, `phone`, `username`)
+INSERT INTO `customer` (`customer_id`, `first_name`, `last_name`, `email`, `phone`, `user_id`)
 VALUES
-(1, 'Emma', 'Johnson', 'emma.johnson@gmail.com', '(555) 123-4567', 'StarGazer123'),
-(2, 'Liam', 'Brown', 'liam.brown@samplemail.com', '(555) 234-5678', 'EchoFrost'),
-(3, 'Olivia', 'Davis', 'olivia.davis@testmail.com', '(555) 345-6789', 'TechVoyager'),
-(4, 'Noah', 'Martinez', 'noah.martinez@domain.com', '(555) 456-7890', 'MoonlitWanderer'),
-(5, 'Sophia', 'Wilson', 'sophia.wilson@mailbox.com', '(555) 567-8901', 'QuantumQuokka'),
-(6, 'Jackson', 'Lee', 'jackson.lee@webmail.com', '(555) 678-9012', 'NebulaNinja'),
-(7, 'Ava', 'Garcia', 'ava.garcia@inbox.com', '(555) 789-0123', 'PixelPioneer'),
-(8, 'Ethan', 'Anderson', 'ethan.anderson@provider.com', '(555) 890-1234', 'MysticHorizon'),
-(9, 'Mia', 'Thomas', 'mia.thomas@service.com', '(555) 901-2345', 'ZenithExplorer'),
-(10, 'James', 'Taylor', 'james.taylor@email.com', '(555) 012-3456', 'AuroraDreamer');
+(1, 'Emma', 'Johnson', 'emma.johnson@gmail.com', '(555) 123-4567', 18),
+(2, 'Liam', 'Brown', 'liam.brown@samplemail.com', '(555) 234-5678', 6),
+(3, 'Olivia', 'Davis', 'olivia.davis@testmail.com', '(555) 345-6789', 19),
+(4, 'Noah', 'Martinez', 'noah.martinez@domain.com', '(555) 456-7890', 11),
+(5, 'Sophia', 'Wilson', 'sophia.wilson@mailbox.com', '(555) 567-8901', 15),
+(6, 'Jackson', 'Lee', 'jackson.lee@webmail.com', '(555) 678-9012', 13),
+(7, 'Ava', 'Garcia', 'ava.garcia@inbox.com', '(555) 789-0123', 14),
+(8, 'Ethan', 'Anderson', 'ethan.anderson@provider.com', '(555) 890-1234', 12),
+(9, 'Mia', 'Thomas', 'mia.thomas@service.com', '(555) 901-2345', 22),
+(10, 'James', 'Taylor', 'james.taylor@email.com', '(555) 012-3456', 4),
+(11, 'Customer', 'One', 'Customer.One@email.com', '(555) 012-3456', 1);
 
 INSERT INTO `products` (`product_id`, `description`, `price`, `name`, `manf_id`, `platform_id`)
 VALUES
@@ -276,18 +278,19 @@ VALUES
 (32, 'An action RPG set in the Viking era, focusing on leading a clan and engaging in raids.', 59.99, 'Assassins Creed Valhalla', 21, 7),
 (33, 'A fantasy RPG where you lead the Inquisition to restore order to a chaotic world.', 29.99, 'Dragon Age: Inquisition', 22, 7);
 
-INSERT INTO `staff` (`staff_id`, `first_name`, `last_name`, `username`)
+INSERT INTO `staff` (`staff_id`, `first_name`, `last_name`, `user_id`)
 VALUES
-(1, 'Ava', 'Smith', 'RogueRanger'),
-(2, 'Liam', 'Johnson', 'CosmicVoyage'),
-(3, 'Sophia', 'Williams', 'EnigmaWalker'),
-(4, 'Noah', 'Brown', 'VortexVagabond'),
-(5, 'Emma', 'Jones', 'FrostedPhoenix'),
-(6, 'Mason', 'Miller', 'SereneSpecter'),
-(7, 'Olivia', 'Davis', 'ElectricEcho'),
-(8, 'Lucas', 'Garcia', 'WhisperingShadow'),
-(9, 'Mia', 'Martinez', 'GalacticQuest'),
-(10, 'Ethan', 'Anderson', 'CrimsonNebula');
+(1, 'Ava', 'Smith', 16),
+(2, 'Liam', 'Johnson', 5),
+(3, 'Sophia', 'Williams', 8),
+(4, 'Noah', 'Brown', 20),
+(5, 'Emma', 'Jones', 9),
+(6, 'Mason', 'Miller', 17),
+(7, 'Olivia', 'Davis', 7),
+(8, 'Lucas', 'Garcia', 21),
+(9, 'Mia', 'Martinez', 10),
+(10, 'Ethan', 'Anderson', 3),
+(11, 'Staff', 'One', 2);
 
 INSERT INTO `works_at` (`store_id`, `staff_id`)
 VALUES
