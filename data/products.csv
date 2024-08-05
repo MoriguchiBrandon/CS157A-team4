@@ -1,0 +1,34 @@
+"product_id";"description";"price";"name";"manf_id";"platform_id"
+1;"An open-world action RPG exploring Hyrule to save Princess Zelda.";59.99;"The Legend of Zelda: Breath of the Wild";1;1
+2;"An open-world action RPG exploring Hyrule to save Princess Zelda.";59.99;"The Legend of Zelda: Breath of the Wild";1;2
+3;"A narrative-driven action-adventure game following Ellie in a post-apocalyptic world.";59.99;"The Last of Us Part II";2;3
+4;"An open-world RPG set in a dystopian future where you play as V, a mercenary with customizable abilities.";59.99;"Cyberpunk 2077";3;3
+5;"An open-world RPG set in a dystopian future where you play as V, a mercenary with customizable abilities.";59.99;"Cyberpunk 2077";3;4
+6;"An open-world RPG set in a dystopian future where you play as V, a mercenary with customizable abilities.";59.99;"Cyberpunk 2077";3;5
+7;"An open-world RPG set in a dystopian future where you play as V, a mercenary with customizable abilities.";59.99;"Cyberpunk 2077";3;6
+8;"An open-world RPG set in a dystopian future where you play as V, a mercenary with customizable abilities.";59.99;"Cyberpunk 2077";3;7
+9;"A sandbox game where you build and explore procedurally generated worlds made up of blocks.";29.99;"Minecraft";4;4
+10;"A sandbox game where you build and explore procedurally generated worlds made up of blocks.";29.99;"Minecraft";4;5
+11;"A sandbox game where you build and explore procedurally generated worlds made up of blocks.";29.99;"Minecraft";4;6
+12;"A sandbox game where you build and explore procedurally generated worlds made up of blocks.";29.99;"Minecraft";4;7
+13;"An action-adventure set in the late 1800s focusing on Arthur Morgan, an outlaw.";59.99;"Red Dead Redemption 2";5;4
+14;"A multiplayer game where players work together on a spaceship, but some are impostors trying to sabotage.";5.99;"Among Us";6;7
+15;"A rogue-like dungeon crawler where you play as Zagreus, trying to escape the underworld.";24.99;"Hades";7;7
+16;"A life simulation game where you build and manage your own island paradise.";59.99;"Animal Crossing: New Horizons";1;1
+17;"A first-person shooter featuring a single-player campaign and expansive multiplayer modes.";69.99;"Call of Duty: Modern Warfare II";10;4
+18;"A first-person shooter featuring a single-player campaign and expansive multiplayer modes.";69.99;"Call of Duty: Modern Warfare II";10;6
+19;"A first-person shooter featuring a single-player campaign and expansive multiplayer modes.";69.99;"Call of Duty: Modern Warfare II";10;7
+20;"An open-world RPG where you play as Geralt of Rivia, a monster hunter navigating a rich, narrative-driven world.";39.99;"The Witcher 3: Wild Hunt";3;7
+21;"An open-world RPG where you play as Geralt of Rivia, a monster hunter navigating a rich, narrative-driven world.";39.99;"The Witcher 3: Wild Hunt";3;3
+22;"A platformer about climbing a mountain with challenging gameplay and a story about mental health.";19.99;"Celeste";12;7
+23;"An action-adventure game set in late 1500s Japan, featuring unique combat and exploration.";59.99;"Sekiro: Shadows Die Twice";13;7
+24;"An open-world action game about reconnecting isolated communities in a post-apocalyptic world.";59.99;"Death Stranding";14;7
+25;"A Metroidvania-style action-adventure game with intricate combat and exploration.";14.99;"Hollow Knight";15;7
+26;"A third-person action-adventure game with a mysterious government building and supernatural phenomena.";39.99;"Control";16;7
+27;"An RPG with deep tactical combat, rich storytelling, and cooperative multiplayer.";44.99;"Divinity: Original Sin 2";17;7
+28;"An open-world survival game set underwater on an alien planet.";29.99;"Subnautica";18;7
+29;"A farming simulation game where you manage a farm, build relationships, and explore caves.";14.99;"Stardew Valley";19;7
+30;"A farming simulation game where you manage a farm, build relationships, and explore caves.";14.99;"Stardew Valley";19;1
+31;"A party game where players compete in wacky mini-games to be the last one standing.";19.99;"Fall Guys: Ultimate Knockout";20;7
+32;"An action RPG set in the Viking era, focusing on leading a clan and engaging in raids.";59.99;"Assassin’s Creed Valhalla";21;7
+33;"A fantasy RPG where you lead the Inquisition to restore order to a chaotic world.";29.99;"Dragon Age: Inquisition";22;7
