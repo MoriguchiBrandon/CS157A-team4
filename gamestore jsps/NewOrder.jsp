@@ -36,18 +36,29 @@
                 int inputProductId = Integer.parseInt(inputProductIdStr);
                 int inputPostalCode = Integer.parseInt(inputPostalCodeStr);
 
+                // Get customer id
+                String query = "SELECT customer_id FROM customer WHERE user_id = ?";
+                ps = con.prepareStatement(query);
+                ps.setInt(1, inputUserId);
+                rs = ps.executeQuery();
+                rs.next();
+                int customerID = rs.getInt(1);
+
                 // Check if product exists
-                String query = "SELECT product_id FROM products WHERE product_id = ?";
+                query = "SELECT product_id FROM products WHERE product_id = ?";
                 ps = con.prepareStatement(query);
                 ps.setInt(1, inputProductId);
                 rs = ps.executeQuery();
+
+                
 
                 if (rs.next()) {
                     rs.close();
                     ps.close();
 
                     // Check inventory
-                    query = "SELECT inventory_num FROM inventory WHERE product_id = ?";
+                    query = "SELECT inventory_num FROM inventory WHERE product_id = ? AND inventory_num Not In "+
+                    "(SELECT inventory_num from orders)";
                     ps = con.prepareStatement(query);
                     ps.setInt(1, inputProductId);
                     rs = ps.executeQuery();
@@ -95,7 +106,7 @@
                         // Insert into orders
                         query = "INSERT INTO `orders` (customer_id, order_id, inventory_num) VALUES (?, ?, ?)";
                         ps = con.prepareStatement(query);
-                        ps.setInt(1, inputUserId);
+                        ps.setInt(1, customerID);
                         ps.setInt(2, newOrderId);
                         ps.setInt(3, inventoryNum);
                         ps.executeUpdate();
@@ -149,6 +160,14 @@
         <input type="submit" value="Order">
     </form>
 
+    <h1>Back to Home Page</h1>
+    <!-- Click to go to home page -->
+    <form action="GamestoreCHomePage.jsp" method="post">
+        <input type="hidden" name="inputUsername" value="<%= inputUsername %>" />
+        <input type="hidden" name="inputUserIdStr" value="<%= inputUserIdStr %>" />
+        <input type="submit" value="Go to Homepage">
+    </form>
+
     <% if (orderCreated) { %>
         <p>Order created successfully!</p>
         <h1>View My Orders</h1>
@@ -167,13 +186,6 @@
             <input type="submit" value="New Order">
         </form>
     
-        <h1>Back to Home Page</h1>
-        <!-- Click to go to home page -->
-        <form action="GamestoreCHomePage.jsp" method="post">
-            <input type="hidden" name="inputUsername" value="<%= inputUsername %>" />
-            <input type="hidden" name="inputUserIdStr" value="<%= inputUserIdStr %>" />
-            <input type="submit" value="Go to Homepage">
-        </form>
     <% } %>
     
 

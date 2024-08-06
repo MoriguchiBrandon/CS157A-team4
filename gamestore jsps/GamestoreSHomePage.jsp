@@ -29,12 +29,6 @@
         <input type="submit" value="All Orders">
     </form>
 
-    <h2>Add or Subtract from Inventory</h2>
-    <form action="inventoryAddSub.jsp" method="post">
-        <input type="hidden" name="inputUsername" value="<%= inputUsername %>" />
-        <input type="hidden" name="inputuserid" value="<%= inputUserId %>" />
-        <input type="submit" value="Update Inventory">
-    </form>
 
     <h2>Items in Store</h2>
     <table border="1">

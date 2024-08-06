@@ -12,7 +12,18 @@
         int inputUserId = Integer.parseInt(inputUserIdStr);
 
         String inputOrderIdStr = request.getParameter("inputOrderId");
-        boolean orderFulfilled = false;
+        boolean tableUpdated = false;  // Initialize tableUpdated
+
+        String productName = "";
+        String customer_fname = "";
+        String customer_lname = "";
+        String platform = "";
+        String Address = "";
+        String City = "";
+        String District = "";
+        int Postal = 0;
+        String Country = "";
+        int staffID = 0;
 
         String user = "root";
         String password = "IAmLate2022!";
@@ -20,6 +31,7 @@
         PreparedStatement ps = null;
         ResultSet rs = null;
 
+        try {
             // Load database driver and establish connection
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/gamestore?autoReconnect=true&useSSL=false", user, password);
@@ -28,31 +40,51 @@
             ps = con.prepareStatement(staffIDQuery);
             ps.setInt(1, inputUserId);
             rs = ps.executeQuery();
+
             
-            int staffID = 0;
-            if (rs.next()) {
-                staffID = rs.getInt("staff_id");
-            }
+            rs.next();
+            staffID = rs.getInt("staff_id");
+            
             rs.close();
             ps.close();
-    %>
-    <%
 
-        try {
-            // Load database driver and establish connection
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/gamestore?autoReconnect=true&useSSL=false", user, password);
             if (inputOrderIdStr != null && !inputOrderIdStr.isEmpty()) {
                 int inputOrderId = Integer.parseInt(inputOrderIdStr);
-
-
 
                 // Check if the Order exists and if it's already fulfilled
                 String query = "SELECT date_fulfilled FROM `order` WHERE order_id = ?";
                 ps = con.prepareStatement(query);
                 ps.setInt(1, inputOrderId);
                 rs = ps.executeQuery();
+
                 if (rs.next() && rs.getTimestamp("date_fulfilled") == null) {
+                    rs.close();
+                    ps.close();
+
+                    query = "SELECT c.first_name, c.last_name, pr.name AS product_name, pl.name AS platform_name, " +
+                            "a.address, a.city, a.district, a.postal_code, a.country " +
+                            "FROM orders AS o " +
+                            "JOIN deliver_to AS d ON o.order_id=d.order_id " +
+                            "JOIN address AS a ON d.address_id=a.address_id " +
+                            "JOIN inventory AS i ON o.inventory_num=i.inventory_num " +
+                            "JOIN products AS pr ON i.product_id=pr.product_id " +
+                            "JOIN platform AS pl ON pr.platform_id = pl.platform_id " +
+                            "JOIN customer AS c ON o.customer_id=c.customer_id " +
+                            "WHERE o.order_id = ?";
+                    ps = con.prepareStatement(query);
+                    ps.setInt(1, inputOrderId);
+                    rs = ps.executeQuery();
+                    if (rs.next()) {
+                        productName = rs.getString("product_name");
+                        customer_fname = rs.getString("first_name");
+                        customer_lname = rs.getString("last_name");
+                        platform = rs.getString("platform_name");
+                        Address = rs.getString("address");
+                        City = rs.getString("city");
+                        District = rs.getString("district");
+                        Postal = rs.getInt("postal_code");
+                        Country = rs.getString("country");
+                    }
                     rs.close();
                     ps.close();
 
@@ -71,9 +103,9 @@
                     ps.setInt(2, inputOrderId);
                     int rowsUpdated = ps.executeUpdate();
                     ps.close();
-                    
+
                     if (rowsUpdated > 0) {
-                        orderFulfilled = true;
+                        tableUpdated = true;
                     }
                 }
             }                                
@@ -87,7 +119,6 @@
         }
     %>
     <p>Hello <%= inputUsername %></p>
-    <p>Hello <%= staffID %></p>
     <h1>Game Store Staff View Store Orders Page</h1>
 
     <h2>Fulfill An Order</h2>
@@ -99,8 +130,8 @@
         <input type="submit" value="Fulfill Order">
     </form>
 
-    <% if (orderFulfilled) { %>
-        <p>Order Fulfilled successfully!</p>
+    <% if (tableUpdated) { %>
+        <p>Delivered <%= productName %> on <%= platform %> to <%= customer_fname %> <%= customer_lname %> at <%= Address %>, <%= City %>, <%= District %> <%= Postal %>, <%= Country %> </p>
     <% } else if (inputOrderIdStr != null && !inputOrderIdStr.isEmpty()) { %>
         <p>Order Fulfill Error</p>
     <% } %>

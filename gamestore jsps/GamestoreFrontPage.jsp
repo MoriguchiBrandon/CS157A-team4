@@ -15,11 +15,11 @@
 <table border="1">
   <tr>
     
-    <td>pr.name</td>
-    <td>pr.price</td>
-    <td>pr.description</td>
-    <td>m.name</td>
-    <td>pl.name</td>
+    <td>Name</td>
+    <td>Price</td>
+    <td>Description</td>
+    <td>Platform</td>
+    <td>Maker</td>
   </tr>
     <%
      String db = "gamestore";

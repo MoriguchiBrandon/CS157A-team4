@@ -44,8 +44,15 @@
             Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(dbUrl, user, password);
 
+            String query = "SELECT customer_id FROM customer WHERE user_id = ?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, inputUserId);
+            rs = ps.executeQuery();
+            rs.next();
+            int customerID = rs.getInt(1);
+
             // SQL query to retrieve orders
-            String query = "SELECT p.name, p.price, p.description, ord.date_ordered, ord.date_fulfilled " +
+            query = "SELECT p.name, p.price, p.description, ord.date_ordered, ord.date_fulfilled " +
                            "FROM orders AS o " +
                            "JOIN `order` AS ord ON o.order_id = ord.order_id " +
                            "JOIN inventory AS i ON o.inventory_num = i.inventory_num " +
@@ -53,7 +60,7 @@
                            "WHERE o.customer_id = ?";
 
             ps = con.prepareStatement(query);
-            ps.setInt(1, inputUserId);
+            ps.setInt(1, customerID);
             rs = ps.executeQuery();
     %>
 
