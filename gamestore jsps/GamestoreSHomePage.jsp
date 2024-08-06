@@ -1,45 +1,83 @@
-<%@ page import="java.sql.*"%>
+<%@ page import="java.sql.*" %>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Gamestore Staff Home Page</title>
+    <meta charset="UTF-8">
+    <title>Gamestore Staff Home Page</title>
 </head>
 <body>
-<h1>Game Store Staff Home Page</h1>
-
-
-<table border="1">
-  <tr>
-    
-    <td>pr.name</td>
-    <td>pr.price</td>
-    <td>pr.description</td>
-    <td>m.name</td>
-    <td>pl.name</td>
-  </tr>
     <%
-     String db = "gamestore";
-        String user; // assumes database name is the same as username
-          user = "root";
-        String password = "IAmLate2022!";
-        try {
-            java.sql.Connection con;
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/gamestore?autoReconnect=true&useSSL=false",user, password);
-            
-
-            out.println("Products for sale \"Guest View\": <br/>");
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT pr.name, pr.price, pr.description, pl.name, m.name FROM gamestore.products as pr Join gamestore.manufacturers AS m ON pr.manf_id = m.manufactuer_id Join gamestore.platform AS pl ON pr.platform_id = pl.platform_id");
-
-            while (rs.next()) {
-         out.println("<tr>" + "<td>" +  rs.getString(1) + "</td>"+ "<td>" +    rs.getBigDecimal(2) + "</td>"+   "<td>" + rs.getString(3) + "</td>"  + "<td>" + rs.getString(4) + "</td>" + "<td>" + rs.getString(5) + "</td>" + "</tr>");
-            }
-            rs.close();
-            stmt.close();
-            con.close();
-        } catch(SQLException e) {
-            out.println("SQLException caught: " + e.getMessage());
-        }
+        String inputUsername = request.getParameter("inputUsername");
+        String inputUserIdStr = request.getParameter("inputuserid");
+        int inputUserId = Integer.parseInt(inputUserIdStr);
     %>
+
+    <p>Hello <%= inputUsername %></p>
+    <h1>Game Store Staff Home Page</h1>
+
+    <h2>View Store Orders</h2>
+    <form action="storeOrders.jsp" method="post">
+        <input type="hidden" name="inputUsername" value="<%= inputUsername %>" />
+        <input type="hidden" name="inputuserid" value="<%= inputUserId %>" />
+        <input type="submit" value="View Orders">
+    </form>
+
+    <h2>View All Orders</h2>
+    <form action="allOrders.jsp" method="post">
+        <input type="hidden" name="inputUsername" value="<%= inputUsername %>" />
+        <input type="hidden" name="inputuserid" value="<%= inputUserId %>" />
+        <input type="submit" value="All Orders">
+    </form>
+
+    <h2>Add or Subtract from Inventory</h2>
+    <form action="inventoryAddSub.jsp" method="post">
+        <input type="hidden" name="inputUsername" value="<%= inputUsername %>" />
+        <input type="hidden" name="inputuserid" value="<%= inputUserId %>" />
+        <input type="submit" value="Update Inventory">
+    </form>
+
+    <h2>Items in Store</h2>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Platform</th>
+            <th>Made By</th>
+        </tr>
+        <%
+            String db = "gamestore";
+            String user = "root";
+            String password = "IAmLate2022!";
+            String url = "jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false";
+
+            try (Connection con = DriverManager.getConnection(url, user, password);
+                 PreparedStatement ps = con.prepareStatement(
+                     "SELECT pr.name, pr.price, pr.description, pl.name AS platform, m.name AS manufacturer " +
+                     "FROM gamestore.works_at AS w " +
+                     "JOIN gamestore.belongs_to AS b ON w.store_id = b.store_id " +
+                     "JOIN gamestore.inventory AS i ON b.inventory_id = i.inventory_num " +
+                     "JOIN gamestore.products AS pr ON i.product_id = pr.product_id " +
+                     "JOIN gamestore.manufacturers AS m ON pr.manf_id = m.manufactuer_id " +
+                     "JOIN gamestore.platform AS pl ON pr.platform_id = pl.platform_id " +
+                     "WHERE w.staff_id = ?")) {
+
+                ps.setInt(1, inputUserId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        out.println("<tr>" +
+                                    "<td>" + rs.getString("name") + "</td>" +
+                                    "<td>" + rs.getBigDecimal("price") + "</td>" +
+                                    "<td>" + rs.getString("description") + "</td>" +
+                                    "<td>" + rs.getString("platform") + "</td>" +
+                                    "<td>" + rs.getString("manufacturer") + "</td>" +
+                                    "</tr>");
+                    }
+                }
+            } catch (SQLException e) {
+                out.println("SQLException caught: " + e.getMessage());
+            }
+        %>
+    </table>
 </body>
 </html>
