@@ -1,4 +1,5 @@
 CREATE DATABASE `gamestore` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `gamestore`;
 CREATE TABLE `address` (
   `address_id` int NOT NULL,
   `address` varchar(200) NOT NULL,
@@ -45,7 +46,8 @@ CREATE TABLE `products` (
 CREATE TABLE `user` (
   `username` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
-  PRIMARY KEY (`username`)
+  `user_id`  int NOT NULL,
+  PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `customer` (
   `customer_id` int NOT NULL,
@@ -53,10 +55,10 @@ CREATE TABLE `customer` (
   `last_name` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
   `phone` varchar(45) DEFAULT NULL,
-  `username` varchar(100) NOT NULL,
+  `user_id` int NOT NULL,
   PRIMARY KEY (`customer_id`),
-  KEY `customer_username_idx` (`username`),
-  CONSTRAINT `customer_username` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `customer_userid_idx` (`user_id`),
+  CONSTRAINT `customer_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `deliver_to` (
   `order_id` int NOT NULL,
@@ -88,10 +90,10 @@ CREATE TABLE `staff` (
   `staff_id` int NOT NULL,
   `first_name` varchar(45) NOT NULL,
   `last_name` varchar(45) NOT NULL,
-  `username` varchar(100) NOT NULL,
+  `user_id`  int NOT NULL,
   PRIMARY KEY (`staff_id`),
-  KEY `staff_username_idx` (`username`),
-  CONSTRAINT `staff_username` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `staff_username_idx` (`user_id`),
+  CONSTRAINT `staff_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `works_at` (
   `store_id` int NOT NULL,
@@ -118,25 +120,21 @@ CREATE TABLE `fulfilled_by` (
   CONSTRAINT `fullfill_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `inventory_add` (
-  `inventory_num` int NOT NULL,
   `product_id` int NOT NULL,
-  `staff` int NOT NULL,
-  PRIMARY KEY (`inventory_num`,`product_id`,`staff`),
+  `staff_id` int NOT NULL,
+  PRIMARY KEY (`product_id`,`staff_id`),
   KEY `add_product_id_idx` (`product_id`),
-  KEY `add_staff_id_idx` (`staff`),
-  CONSTRAINT `add_inventory_id` FOREIGN KEY (`inventory_num`) REFERENCES `inventory` (`inventory_num`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `add_staff_id_idx` (`staff_id`),
   CONSTRAINT `add_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `add_staff_id` FOREIGN KEY (`staff`) REFERENCES `staff` (`staff_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `add_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `inventory_subtract` (
   `inventory_num` int NOT NULL,
-  `product_id` int NOT NULL,
   `staff_id` int NOT NULL,
-  PRIMARY KEY (`inventory_num`,`product_id`,`staff_id`),
-  KEY `sub_product_id_idx` (`product_id`),
+  PRIMARY KEY (`inventory_num`,`staff_id`),
+  KEY `sub_inventory_id_idx` (`inventory_num`),
   KEY `sub_staff_id_idx` (`staff_id`),
   CONSTRAINT `sub_inventory_num` FOREIGN KEY (`inventory_num`) REFERENCES `inventory` (`inventory_num`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `sub_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `sub_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -166,7 +164,7 @@ VALUES
 (9, 'Gamestore Livermore'),
 (10, 'Gamestore San Francisco');
 
-INSERT INTO `manufacturers` (`name`, `manufacturer_id`)
+INSERT INTO `manufacturers` (`name`, `manufactuer_id`)
 VALUES
 ('Nintendo', 1),
 ('Naughty Dog', 2),
@@ -205,43 +203,44 @@ VALUES
 (9, 'Xbox 360'),
 (10, 'Game Cube');
 
-INSERT INTO `users` (`username`, `password`)
+INSERT INTO `user` (`username`, `password`, `user_id`)
 VALUES
-('AuroraDreamer', 'v^X*4T7!Q#R9@'),
-('CosmicVoyage', 'R9&!mT^5b#J7@'),
-('CrimsonNebula', 'm&^9X*3!P#L$2'),
-('EasyC', '1111'),
-('EasyS', '1111'),
-('EchoFrost', 'G3!mL#xQ8pF$'),
-('ElectricEcho', '*W9^@t&4B#R1$'),
-('EnigmaWalker', 'G$2^P6@x!R&8#'),
-('FrostedPhoenix', 'Y#5@P*3!bR^X8'),
-('GalacticQuest', 'H5$R&2^9@Q*8!'),
-('MoonlitWanderer', 'k@R1^jG$5XpA'),
-('MysticHorizon', 'P*3!fR^L&7$wJ'),
-('NebulaNinja', 'N9&h%3D@F^Jx!'),
-('PixelPioneer', 'u$X2@z^Q8#Jk8'),
-('QuantumQuokka', '#4bL&^Yp*6Zt!'),
-('RogueRanger', 'Z@6^h#1*B2$kV'),
-('SereneSpecter', 'k^3$L&2*J@9!m'),
-('StarGazer123', 'X7&vT^bJ9aZ@'),
-('TechVoyager', 'q8*WvZ%2RbP^'),
-('VortexVagabond', 'j7!L^Q*9x&F$2'),
-('WhisperingShadow', 'X*7^2!L@#m8&J'),
-('ZenithExplorer', 'H5^t@K%8^mL#1');
+('AuroraDreamer', 'v^X*4T7!Q#R9@', 4),
+('CosmicVoyage', 'R9&!mT^5b#J7@', 5),
+('CrimsonNebula', 'm&^9X*3!P#L$2', 3),
+('EasyC', '1111', 1),
+('EasyS', '1111', 2),
+('EchoFrost', 'G3!mL#xQ8pF$', 6),
+('ElectricEcho', '*W9^@t&4B#R1$', 7),
+('EnigmaWalker', 'G$2^P6@x!R&8#', 8),
+('FrostedPhoenix', 'Y#5@P*3!bR^X8', 9),
+('GalacticQuest', 'H5$R&2^9@Q*8!', 10),
+('MoonlitWanderer', 'k@R1^jG$5XpA', 11),
+('MysticHorizon', 'P*3!fR^L&7$wJ', 12),
+('NebulaNinja', 'N9&h%3D@F^Jx!', 13),
+('PixelPioneer', 'u$X2@z^Q8#Jk8', 14),
+('QuantumQuokka', '#4bL&^Yp*6Zt!', 15),
+('RogueRanger', 'Z@6^h#1*B2$kV', 16),
+('SereneSpecter', 'k^3$L&2*J@9!m', 17),
+('StarGazer123', 'X7&vT^bJ9aZ@', 18),
+('TechVoyager', 'q8*WvZ%2RbP^', 19),
+('VortexVagabond', 'j7!L^Q*9x&F$2', 20),
+('WhisperingShadow', 'X*7^2!L@#m8&J', 21),
+('ZenithExplorer', 'H5^t@K%8^mL#1', 22);
 
-INSERT INTO `customer` (`customer_id`, `first_name`, `last_name`, `email`, `phone`, `username`)
+INSERT INTO `customer` (`customer_id`, `first_name`, `last_name`, `email`, `phone`, `user_id`)
 VALUES
-(1, 'Emma', 'Johnson', 'emma.johnson@gmail.com', '(555) 123-4567', 'StarGazer123'),
-(2, 'Liam', 'Brown', 'liam.brown@samplemail.com', '(555) 234-5678', 'EchoFrost'),
-(3, 'Olivia', 'Davis', 'olivia.davis@testmail.com', '(555) 345-6789', 'TechVoyager'),
-(4, 'Noah', 'Martinez', 'noah.martinez@domain.com', '(555) 456-7890', 'MoonlitWanderer'),
-(5, 'Sophia', 'Wilson', 'sophia.wilson@mailbox.com', '(555) 567-8901', 'QuantumQuokka'),
-(6, 'Jackson', 'Lee', 'jackson.lee@webmail.com', '(555) 678-9012', 'NebulaNinja'),
-(7, 'Ava', 'Garcia', 'ava.garcia@inbox.com', '(555) 789-0123', 'PixelPioneer'),
-(8, 'Ethan', 'Anderson', 'ethan.anderson@provider.com', '(555) 890-1234', 'MysticHorizon'),
-(9, 'Mia', 'Thomas', 'mia.thomas@service.com', '(555) 901-2345', 'ZenithExplorer'),
-(10, 'James', 'Taylor', 'james.taylor@email.com', '(555) 012-3456', 'AuroraDreamer');
+(11, 'Emma', 'Johnson', 'emma.johnson@gmail.com', '(555) 123-4567', 18),
+(2, 'Liam', 'Brown', 'liam.brown@samplemail.com', '(555) 234-5678', 6),
+(3, 'Olivia', 'Davis', 'olivia.davis@testmail.com', '(555) 345-6789', 19),
+(4, 'Noah', 'Martinez', 'noah.martinez@domain.com', '(555) 456-7890', 11),
+(5, 'Sophia', 'Wilson', 'sophia.wilson@mailbox.com', '(555) 567-8901', 15),
+(6, 'Jackson', 'Lee', 'jackson.lee@webmail.com', '(555) 678-9012', 13),
+(7, 'Ava', 'Garcia', 'ava.garcia@inbox.com', '(555) 789-0123', 14),
+(8, 'Ethan', 'Anderson', 'ethan.anderson@provider.com', '(555) 890-1234', 12),
+(9, 'Mia', 'Thomas', 'mia.thomas@service.com', '(555) 901-2345', 22),
+(10, 'James', 'Taylor', 'james.taylor@email.com', '(555) 012-3456', 4),
+(1, 'Customer', 'One', 'Customer.One@email.com', '(555) 012-3456', 1);
 
 INSERT INTO `products` (`product_id`, `description`, `price`, `name`, `manf_id`, `platform_id`)
 VALUES
@@ -279,18 +278,19 @@ VALUES
 (32, 'An action RPG set in the Viking era, focusing on leading a clan and engaging in raids.', 59.99, 'Assassins Creed Valhalla', 21, 7),
 (33, 'A fantasy RPG where you lead the Inquisition to restore order to a chaotic world.', 29.99, 'Dragon Age: Inquisition', 22, 7);
 
-INSERT INTO `staff` (`staff_id`, `first_name`, `last_name`, `username`)
+INSERT INTO `staff` (`staff_id`, `first_name`, `last_name`, `user_id`)
 VALUES
-(1, 'Ava', 'Smith', 'RogueRanger'),
-(2, 'Liam', 'Johnson', 'CosmicVoyage'),
-(3, 'Sophia', 'Williams', 'EnigmaWalker'),
-(4, 'Noah', 'Brown', 'VortexVagabond'),
-(5, 'Emma', 'Jones', 'FrostedPhoenix'),
-(6, 'Mason', 'Miller', 'SereneSpecter'),
-(7, 'Olivia', 'Davis', 'ElectricEcho'),
-(8, 'Lucas', 'Garcia', 'WhisperingShadow'),
-(9, 'Mia', 'Martinez', 'GalacticQuest'),
-(10, 'Ethan', 'Anderson', 'CrimsonNebula');
+(1, 'Ava', 'Smith', 16),
+(2, 'Liam', 'Johnson', 5),
+(3, 'Sophia', 'Williams', 8),
+(4, 'Noah', 'Brown', 20),
+(5, 'Emma', 'Jones', 9),
+(6, 'Mason', 'Miller', 17),
+(7, 'Olivia', 'Davis', 7),
+(8, 'Lucas', 'Garcia', 21),
+(9, 'Mia', 'Martinez', 10),
+(10, 'Ethan', 'Anderson', 3),
+(11, 'Staff', 'One', 2);
 
 INSERT INTO `works_at` (`store_id`, `staff_id`)
 VALUES
@@ -303,7 +303,8 @@ VALUES
 (7, 7),
 (8, 8),
 (9, 9),
-(10, 10);
+(10, 10),
+(1, 11);
 
 INSERT INTO `inventory` (`inventory_num`, `product_id`)
 VALUES
@@ -554,7 +555,7 @@ VALUES
 (55, 7),
 (76, 8),
 (209, 9),
-(220, 10);
+(210, 10);
 
 INSERT INTO `order` (`order_id`, `date_ordered`, `date_fulfilled`)
 VALUES
@@ -573,36 +574,51 @@ VALUES
 (13, '2018-03-02 06:45:00', '2024-08-14 01:45:00'),
 (14, '2017-11-18 19:30:00', '2024-08-14 01:45:00'),
 (15, '2020-07-04 21:00:00', NULL),
-(16, '2021-09-11 15:30:00', '2024-08-14 01:45:00');
+(16, '2021-09-29 15:30:00', NULL),
+(17, '2021-03-11 15:30:00', NULL),
+(18, '2021-09-30 15:30:00', NULL),
+(19, '2021-09-11 15:30:00', NULL),
+(20, '2021-09-21 15:30:00', NULL),
+(21, '2021-07-11 15:30:00', NULL),
+(22, '2021-05-11 15:30:00', NULL),
+(23, '2021-04-11 15:30:00', NULL),
+(24, '2021-03-11 15:30:00', NULL),
+(25, '2021-02-11 15:30:00', NULL),
+(26, '2021-01-11 15:30:00', NULL),
+(27, '2021-10-11 15:30:00', NULL),
+(28, '2021-05-11 15:30:00', NULL);
 
 INSERT INTO `orders` (`customer_id`, `order_id`, `inventory_num`)
 VALUES
 (1, 1, 4),
-(1, 1, 6),
-(2, 2, 90),
-(2, 3, 220),
-(2, 4, 217),
-(3, 5, 6),
-(3, 5, 8),
-(3, 5, 10),
-(4, 6, 7),
-(4, 7, 56),
-(5, 8, 57),
-(6, 9, 80),
-(7, 10, 90),
-(8, 11, 100),
-(9, 12, 120),
-(9, 12, 150),
-(9, 12, 160),
-(9, 13, 143),
-(9, 13, 187),
-(10, 14, 134),
-(2, 15, 1),
-(2, 15, 177),
-(2, 15, 189),
-(2, 15, 199),
-(6, 16, 23),
-(6, 16, 26);
+(1, 2, 114),
+(2, 3, 90),
+(2, 4, 220),
+(2, 5, 217),
+(3, 6, 6),
+(3, 7, 8),
+(3, 8, 10),
+(4, 9, 7),
+(4, 10, 56),
+(5, 11, 57),
+(6, 12, 80),
+(7, 13, 90),
+(8, 14, 100),
+(9, 15, 120),
+(9, 16, 150),
+(9, 17, 160),
+(9, 18, 143),
+(9, 19, 187),
+(10, 20, 134),
+(11, 21, 1),
+(1, 22, 203),
+(2, 23, 189),
+(11, 24, 199),
+(2, 25, 23),
+(11, 26, 26),
+(7, 27, 191),
+(2, 28, 188);
+
 
 INSERT INTO `belongs_to` (`inventory_id`, `store_id`)
 VALUES
@@ -657,7 +673,175 @@ VALUES
 (70, 3),
 (80, 3),
 (89, 3),
-(98, 3)
+(98, 3),
+(106, 3),
+(118, 3),
+(128, 3),
+(140, 3),
+(148, 3),
+(151, 3),
+(162, 3),
+(177, 3),
+(189, 3),
+(199, 3),
+(210, 3),
+(211, 3),
+(212, 3),
+(213, 3),
+(214, 3),
+(215, 3),
+(216, 3),
+(217, 3),
+(218, 3),
+(219, 3),
+(220, 3),
+(1, 4),
+(14, 4),
+(26, 4),
+(31, 4),
+(42, 4),
+(54, 4),
+(69, 4),
+(77, 4),
+(81, 4),
+(92, 4),
+(104, 4),
+(113, 4),
+(127, 4),
+(138, 4),
+(144, 4),
+(160, 4),
+(167, 4),
+(172, 4),
+(186, 4),
+(191, 4),
+(206, 4),
+(9, 5),
+(19, 5),
+(28, 5),
+(38, 5),
+(50, 5),
+(58, 5),
+(61, 5),
+(73, 5),
+(85, 5),
+(97, 5),
+(108, 5),
+(117, 5),
+(121, 5),
+(132, 5),
+(150, 5),
+(155, 5),
+(168, 5),
+(179, 5),
+(183, 5),
+(195, 5),
+(207, 5),
+(5, 6),
+(15, 6),
+(22, 6),
+(34, 6),
+(47, 6),
+(55, 6),
+(64, 6),
+(74, 6),
+(84, 6),
+(94, 6),
+(102, 6),
+(111, 6),
+(126, 6),
+(134, 6),
+(142, 6),
+(152, 6),
+(165, 6),
+(171, 6),
+(182, 6),
+(194, 6),
+(209, 6),
+(2, 7),
+(16, 7),
+(25, 7),
+(32, 7),
+(44, 7),
+(51, 7),
+(62, 7),
+(79, 7),
+(87, 7),
+(95, 7),
+(105, 7),
+(116, 7),
+(123, 7),
+(139, 7),
+(149, 7),
+(154, 7),
+(161, 7),
+(174, 7),
+(188, 7),
+(198, 7),
+(202, 7),
+(7, 8),
+(18, 8),
+(23, 8),
+(35, 8),
+(41, 8),
+(53, 8),
+(65, 8),
+(76, 8),
+(86, 8),
+(99, 8),
+(103, 8),
+(119, 8),
+(124, 8),
+(131, 8),
+(145, 8),
+(157, 8),
+(169, 8),
+(173, 8),
+(184, 8),
+(192, 8),
+(204, 8),
+(8, 9),
+(13, 9),
+(27, 9),
+(36, 9),
+(43, 9),
+(56, 9),
+(68, 9),
+(75, 9),
+(82, 9),
+(91, 9),
+(109, 9),
+(115, 9),
+(130, 9),
+(137, 9),
+(147, 9),
+(158, 9),
+(163, 9),
+(178, 9),
+(190, 9),
+(200, 9),
+(208, 9),
+(10, 10),
+(20, 10),
+(30, 10),
+(40, 10),
+(49, 10),
+(59, 10),
+(63, 10),
+(71, 10),
+(88, 10),
+(96, 10),
+(107, 10),
+(114, 10),
+(125, 10),
+(136, 10),
+(141, 10),
+(153, 10),
+(166, 10),
+(176, 10),
+(185, 10),
+(196, 10),
+(201, 10);
 
 INSERT INTO `fulfilled_by` (`order_id`, `staff_id`)
 VALUES
@@ -688,4 +872,15 @@ VALUES
 (6, 8),
 (13, 8),
 (8, 9),
-(7, 10);
+(7, 10),
+(17, 2),
+(18, 3),
+(19, 4),
+(20, 4),
+(21, 5),
+(22, 6),
+(23, 6),
+(24, 7),
+(25, 8),
+(26, 8);
+
